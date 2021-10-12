@@ -54,6 +54,8 @@ let startButton = document.getElementById("start");
 let submitButton = document.getElementById("submit");
 let nextButton = document.getElementById("next");
 let resultButton = document.getElementById("result");
+let resultBox = document.getElementById("result_box");
+let returnButton = document.getElementById("return");
 
 let questionNumber = questions.length;
 
@@ -65,6 +67,9 @@ nextButton.style.display = 'none';
 
 let resultDisplay = resultButton.style.display;
 resultButton.style.display = 'none';
+
+let resultBoxDisplay = resultBox.style.display;
+resultBox.style.display = 'none';
 
 let cnt = 0;
 let questionOrder = [];
@@ -103,6 +108,8 @@ function StartQuiz(){
     cnt += 1; 
 }
 let score = 0;
+let each_answer = [];
+let selectedAnswer = "";
 function CheckAnswer(cnt) {
     ansewerType = questions[questionOrder[cnt-1]].answer_type;
     correctAnswer = questions[questionOrder[cnt-1]].correct_answer; 
@@ -119,9 +126,11 @@ function CheckAnswer(cnt) {
     };
     if (selectedAnswer === correctAnswer){
         alert("正解");
-        score += 1; 
+        score += 1;
+        each_answer.push("◯");
     } else {
-        alert(selectedAnswer);
+        alert("不正解");
+        each_answer.push("×");
     };
     submitButton.style.display = "none";
     if(cnt < questionNumber){
@@ -131,10 +140,77 @@ function CheckAnswer(cnt) {
     };
 }
 
+let resultText = document.getElementById("result_text");
+let resultGrade = document.getElementById("result_grade");
+let resultScore = document.getElementById("result_score");
+let resultTable = document.getElementById("result_table");
+
 function Result(score){
-    alert('結果：' + score + '/' + questionNumber + ' 正解' );
+    quizBox.style.display = "none";
+    answerBox.style.display = "none";
+    resultButton.style.display = "none";
+    resultBox.style.display = resultBoxDisplay;
+
+    let grade = "";
+    if(score < 2){
+        grade = "E";
+    }else if(score < 3){
+        grade = "D";
+    }else if(score < 4){
+        grade = "C";
+    }else if(score < 5){
+        grade = "B";
+    }else{
+        grade = "A";
+    }
+
+    resultText.innerHTML = score + "問 / " + questionNumber + "問中　正解！";
+    resultGrade.innerHTML = "評価" + grade; 
+    resultScore.innerHTML = "スコア" + score;
+    
+    CreateTable();
+
+
+/*  alert('結果：' + score + '/' + questionNumber + ' 正解' ); */ 
 }
 
+/* 参考元
+https://developer.mozilla.org/ja/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces */
+function CreateTable(){
+  var tbl = document.createElement("table");
+  var tblBody = document.createElement("tbody");
+
+  // 各セルの作成
+  for (var i = 0; i < 2; i++) {
+    // 行<tr>タグの作成
+    var row = document.createElement("tr");
+
+    for (var j = 0; j < 5; j++) {
+      //　列<td>タグを作成して各タグに問題番号と正誤を表示
+      var cell = document.createElement("td");
+      if(i == 0){
+        var cellText = document.createTextNode(j+1 + "問");
+      }else{
+        var cellText = document.createTextNode(each_answer[j]);
+      };
+      cell.appendChild(cellText);
+      row.appendChild(cell);
+    }
+
+    // <tbody>タグの子要素に<row>タグを追加
+    tblBody.appendChild(row);
+  }
+
+  // <tbody>タグを<table>タグの中に追加
+  tbl.appendChild(tblBody);
+  // <table>タグを<result_table>の中に追加
+  resultTable.appendChild(tbl);
+  // 枠線を表示
+  tbl.setAttribute("border", "1");
+}
+
+/* CreateTable();
+ */
 
 submitButton.addEventListener('click', () => {
     CheckAnswer(cnt);
@@ -150,6 +226,10 @@ startButton.addEventListener('click', () => {
 
 resultButton.addEventListener('click', () => {
     Result(score);
+});
+
+returnButton.addEventListener('click', () => {
+    alert("未実装");
 });
 
 
