@@ -53,13 +53,19 @@ let answerBox = document.getElementById("answer_box");
 let startButton = document.getElementById("start");
 let submitButton = document.getElementById("submit");
 let nextButton = document.getElementById("next");
+let resultButton = document.getElementById("result");
+
+let questionNumber = questions.length;
 
 let submitDisplay = submitButton.style.display;
 submitButton.style.display = 'none';
 
 let nextDisplay = nextButton.style.display;
 nextButton.style.display = 'none';
- 
+
+let resultDisplay = resultButton.style.display;
+resultButton.style.display = 'none';
+
 let cnt = 0;
 let questionOrder = [];
 
@@ -68,8 +74,8 @@ function StartQuiz(){
         submitButton.style.display = submitDisplay;
         startButton.style.display = "none";
         let num = 0;
-        while(questionOrder.length < 5){
-            num = Math.floor(Math.random() * questions.length);
+        while(questionOrder.length < questionNumber){
+            num = Math.floor(Math.random() * questionNumber);
             if(questionOrder.indexOf(num) == -1){
                 questionOrder.push(num);
             };
@@ -96,7 +102,7 @@ function StartQuiz(){
     output.length = 0;
     cnt += 1; 
 }
-
+let score = 0;
 function CheckAnswer(cnt) {
     ansewerType = questions[questionOrder[cnt-1]].answer_type;
     correctAnswer = questions[questionOrder[cnt-1]].correct_answer; 
@@ -113,11 +119,20 @@ function CheckAnswer(cnt) {
     };
     if (selectedAnswer === correctAnswer){
         alert("正解");
+        score += 1; 
     } else {
         alert(selectedAnswer);
     };
     submitButton.style.display = "none";
-    nextButton.style.display = nextDisplay;
+    if(cnt < questionNumber){
+        nextButton.style.display = nextDisplay;
+    }else{
+        resultButton.style.display = resultDisplay;
+    };
+}
+
+function Result(score){
+    alert('結果：' + score + '/' + questionNumber + ' 正解' );
 }
 
 
@@ -132,4 +147,9 @@ nextButton.addEventListener('click', () => {
 startButton.addEventListener('click', () => {
     StartQuiz();
 });
+
+resultButton.addEventListener('click', () => {
+    Result(score);
+});
+
 
