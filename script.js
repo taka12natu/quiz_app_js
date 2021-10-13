@@ -51,6 +51,7 @@ let questions = [
 let quizBox = document.getElementById("quiz");
 let answerBox = document.getElementById("answer_box");
 let startButton = document.getElementById("start");
+let panelButton = document.getElementById("open_panel");
 let submitButton = document.getElementById("submit");
 let nextButton = document.getElementById("next");
 let resultButton = document.getElementById("result");
@@ -58,6 +59,9 @@ let resultBox = document.getElementById("result_box");
 let returnButton = document.getElementById("return");
 
 let questionNumber = questions.length;
+
+let panelDisplay = panelButton.style.display;
+panelButton.style.display = 'none';
 
 let submitDisplay = submitButton.style.display;
 submitButton.style.display = 'none';
@@ -73,10 +77,13 @@ resultBox.style.display = 'none';
 
 let cnt = 0;
 let questionOrder = [];
+let randomPanel = [];
+let each_score = 20;
 
 function StartQuiz(){
+    submitButton.style.display = submitDisplay;
+    panelButton.style.display = panelDisplay;
     if(cnt == 0){ 
-        submitButton.style.display = submitDisplay;
         startButton.style.display = "none";
         let num = 0;
         while(questionOrder.length < questionNumber){
@@ -86,28 +93,53 @@ function StartQuiz(){
             };
         };
     }else{
-        submitButton.style.display = submitDisplay;
         nextButton.style.display = "none";
     };
-    quizBox.innerHTML = `<div><img src="./img/${questions[questionOrder[cnt]].img}" alt=""><div>${questions[questionOrder[cnt]].question}</div></div>`; 
 
+    while(randomPanel.length < 36){
+        num = Math.floor(Math.random() * 36);
+        if(randomPanel.indexOf(num) == -1){
+            randomPanel.push(num);
+        };
+    };
+
+    quizBox.innerHTML = `<div id="img_box"><img src="./img/${questions[questionOrder[cnt]].img}" alt=""></div><div class="question_text">${questions[questionOrder[cnt]].question}</div>`; 
+
+    document.getElementById("img_box").insertAdjacentHTML('afterbegin', `<div id="panel_box"></div>`);
+
+    for(i=0; i<36; i++){
+        document.getElementById("panel_box").insertAdjacentHTML('beforeend', `<div class="panel"></div>`);
+    }
+    
     let output = [];
     if(questions[questionOrder[cnt]].answer_type == "radio"){
         questions[questionOrder[cnt]].answers.forEach(element => {
-            output.push(`<input type="radio" name="radio" value="${element}">${element}</br>`);
+            output.push(`<input type="radio" name="radio" value="${element}"     id="radio">${element}</br>`);
         });
     }else if(questions[questionOrder[cnt]].answer_type == "check"){
         questions[questionOrder[cnt]].answers.forEach(element => {
-            output.push(`<input type="checkbox" name="checkbox" value="${element}">${element}</br>`);
+            output.push(`<input type="checkbox" name="checkbox" value="${element}" id="checkbox">${element}</br>`);
         });
     }else{
-        output.push(`<input type="textbox" name="textbox" value=""></br>`);
+        output.push(`<input type="textbox" name="textbox" value="" id="textbox"></br>`);
     };
     answerBox.innerHTML = output.join("");
     output.length = 0;
     cnt += 1; 
 }
+
+let p_num = 0;
+function OpenPanel(){
+    let epanel = document.getElementById("panel_box");
+    epanel.children[randomPanel[p_num]].style.opacity = 0;
+    epanel.children[randomPanel[p_num+1]].style.opacity = 0;
+    epanel.children[randomPanel[p_num+2]].style.opacity = 0;
+    p_num += 3;
+    each_score -= 2;
+}
+
 let score = 0;
+let correct_num = 0;
 let each_answer = [];
 let selectedAnswer = "";
 function CheckAnswer(cnt) {
@@ -126,12 +158,15 @@ function CheckAnswer(cnt) {
     };
     if (selectedAnswer === correctAnswer){
         alert("正解");
-        score += 1;
+        score += each_score;
         each_answer.push("◯");
+        correct_num += 1;
     } else {
         alert("不正解");
         each_answer.push("×");
     };
+    each_score = 20;
+    selectedAnswer = "";
     submitButton.style.display = "none";
     if(cnt < questionNumber){
         nextButton.style.display = nextDisplay;
@@ -148,23 +183,24 @@ let resultTable = document.getElementById("result_table");
 function Result(score){
     quizBox.style.display = "none";
     answerBox.style.display = "none";
+    panelButton.style.display = "none";
     resultButton.style.display = "none";
     resultBox.style.display = resultBoxDisplay;
 
     let grade = "";
-    if(score < 2){
+    if(score < 20){
         grade = "E";
-    }else if(score < 3){
+    }else if(score < 40){
         grade = "D";
-    }else if(score < 4){
+    }else if(score < 60){
         grade = "C";
-    }else if(score < 5){
+    }else if(score < 80){
         grade = "B";
     }else{
         grade = "A";
     }
 
-    resultText.innerHTML = score + "問 / " + questionNumber + "問中　正解！";
+    resultText.innerHTML = correct_num + "問 / " + questionNumber + "問中　正解！";
     resultGrade.innerHTML = "評価" + grade; 
     resultScore.innerHTML = "スコア" + score;
     
@@ -209,8 +245,12 @@ function CreateTable(){
   tbl.setAttribute("border", "1");
 }
 
-/* CreateTable();
- */
+
+panelButton.addEventListener('click', () => {
+    if(p_num <36){
+        OpenPanel();
+    }
+});
 
 submitButton.addEventListener('click', () => {
     CheckAnswer(cnt);
