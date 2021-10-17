@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css">
     <title>Document</title>
 </head>
 <body>
@@ -13,31 +15,41 @@
     <div class="header">
         <div class="title">Quiz 何の写真？</div>
     </div>
-    <div class="main">
-        <button type="button" value="button" id="start">始める</button>
+    <div id="main" class="top_height">
+        <div id="top_img_box"><img src="./img/undraw_online_test_gba7.png" alt="" class="top_img"></div>
+        <div class="top_btn">
+            <a id="start" href="javascript:void(0);">START</a>
+        </div>
         <div id="quiz"></div>
         <button type="button" id="open_panel">パネルを開く</button>
-        <form id="answer_box"></form>
+        <div id="error_text"></div>
+        <form id="answer_box" class="form_style"></form>
         <button type="submit" id="submit">回答する</button>
         <button type="submit" id="next">次へ</button> 
         <button type="submit" id="result">結果</button>
         <div id="result_box">
             <div id="result_text"></div>
             <div id="result_detail">
-                <div id="result_grade"></div>
-                <div id="result_score"></div>
+                <div class="result_data">
+                    <div id="result_grade"></div>
+                    <div id="result_score"></div>
+                </div>
                 <div id="result_table"></div>
             </div>
-            <div id="result_quetion">
-                <!-- slick -->
+            <div id="result_question">
+                <ul class="slider"></ul>
             </div>
             <button type="submit" id="return">TOPに戻る</button>
         </div> 
+        <div id="footer_img"><img src="./img/undraw_Faq_re_31cw.png" alt=""></div>
     </div>
-
-<div class="footer"></div>
+    <div id="judge_popup"></div>
 
 <script type="text/javascript" src="script.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<!-- slickのJavaScript -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 </body>
 </html>
 
