@@ -59,49 +59,40 @@ let resultButton = document.getElementById("result");
 let resultBox = document.getElementById("result_box");
 let returnButton = document.getElementById("return");
 let errorText = document.getElementById("error_text");
-
-let questionNumber = questions.length;
-
-let panelDisplay = panelButton.style.display;
-panelButton.style.display = 'none';
-
-let submitDisplay = submitButton.style.display;
-submitButton.style.display = 'none';
-
-let nextDisplay = nextButton.style.display;
-nextButton.style.display = 'none';
-
-let resultDisplay = resultButton.style.display;
-resultButton.style.display = 'none';
-
-let resultBoxDisplay = resultBox.style.display;
-resultBox.style.display = 'none';
-
 let judgePopup = document.getElementById("judge_popup");
-let judgePopupDisplay = judgePopup.style.display;
-judgePopup.style.display = 'none';
-
 let footerImg = document.getElementById("footer_img");
-let footerImgDisplay = footerImg.style.display;
-footerImg.style.display = 'none';
+
+
+function startDisplay(){
+    panelButton.style.display = 'none';
+    submitButton.style.display = 'none';
+    nextButton.style.display = 'none';
+    resultButton.style.display = 'none';
+    resultBox.style.display = 'none';
+    judgePopup.style.display = 'none';
+    footerImg.style.display = 'none';
+}
+startDisplay();
 
 let cnt = 0;
-let questionOrder = [];
+let questionOrder = [];　//問題番号をランダムに格納する配列
 let randomPanel = [];
 let output = [];
+let questionNumber = questions.length; //問題数
 
 function StartQuiz(){
     document.getElementById("top_img_box").style.display =  "none";
-    submitButton.style.display = submitDisplay;
-    panelButton.style.display = panelDisplay;
+    submitButton.style.display = "block";
+    panelButton.style.display = "block";
     p_num = 0;
     if(cnt == 0){ 
         quizBox.style.display = "block";
         answerBox.style.display = "block";
         startButton.style.display = "none";
-        footerImg.style.display = footerImgDisplay;
+        footerImg.style.display = "block";
         document.getElementById("main").style.height = "100%";
         let num = 0;
+        // 問題番号をランダムに配列に格納
         while(questionOrder.length < questionNumber){
             num = Math.floor(Math.random() * questionNumber);
             if(questionOrder.indexOf(num) == -1){
@@ -110,15 +101,17 @@ function StartQuiz(){
         };
     }else{
         nextButton.style.display = "none";
-        judgePopup.style.display = "none";
-        judgePopup.classList.remove(".fadein");    
+        judgePopup.style.display = "none"; 
+        judgePopup.classList.remove(".fadein");     
     };
+    // パネル36枚をランダムに配列に格納
     while(randomPanel.length < 36){
         num = Math.floor(Math.random() * 36);
         if(randomPanel.indexOf(num) == -1){
             randomPanel.push(num);
         };
     };
+    //問題文と画像を表示
     quizBox.innerHTML = `<div class="question_text">Q${cnt+1} ${questions[questionOrder[cnt]].question}</div><div id="img_box"><img class="quiz_img" src="./img/${questions[questionOrder[cnt]].img}" alt=""></div>`; 
 
     document.getElementById("img_box").insertAdjacentHTML('afterbegin', `<div id="panel_box"></div>`);
@@ -126,6 +119,7 @@ function StartQuiz(){
     for(i=0; i<36; i++){
         document.getElementById("panel_box").insertAdjacentHTML('beforeend', `<div class="panel"></div>`);
     }
+    //回答選択肢を形式によって表示
     AnswerType(cnt);
 
     answerBox.innerHTML = output.join("");
@@ -148,12 +142,13 @@ function AnswerType(index){
 }
 
 let p_num = 0;
+// パネルをクリックするとランダムに3枚開き、スコアを2点減点
 function OpenPanel(){
     let eachPanel = document.getElementById("panel_box");
     eachPanel.children[randomPanel[p_num]].style.opacity = 0;
     eachPanel.children[randomPanel[p_num+1]].style.opacity = 0;
     eachPanel.children[randomPanel[p_num+2]].style.opacity = 0;
-    if(p_num != 0){
+    if(p_num != 0){ //1回目のみ減点しない
         score -= 2;
     };
     p_num += 3;
@@ -171,6 +166,7 @@ function CheckAnswer(cnt) {
     if(ansewerType === "radio"){
         correctAnswer = questions[questionOrder[cnt-1]].correct_answer; 
          selectedAnswer = answerBox.radio.value;
+         //　未選択時にエラー表示
          if(!selectedAnswer){
             errorText.innerHTML = "１つ選択してください"
             errorText.style.display = "block";
@@ -186,6 +182,7 @@ function CheckAnswer(cnt) {
                selectedAnswer = selectedAnswer + Object.keys(questions[questionOrder[cnt-1]].answers)[i];
             };
         };
+        //　未選択時にエラー表示
         if(!selectedAnswer){
             errorText.innerHTML = "１つ以上選択してください"
             errorText.style.display = "block";
@@ -196,7 +193,7 @@ function CheckAnswer(cnt) {
         correctAnswer = questions[questionOrder[cnt-1]].correct_answer; 
         selectedAnswer = answerBox.textbox.value;
     };
-
+    // 正誤判定後の処理
     if (selectedAnswer === correctAnswer){
         judgePopup.innerHTML = "正解! スコア："+score+"点";
         judgePopup.style.color = "rgb(18 179 18)";
@@ -213,8 +210,8 @@ function CheckAnswer(cnt) {
         each_score.push(0);
 
     };
-
-    judgePopup.style.display = judgePopupDisplay;
+    // 正誤判定を表示
+    judgePopup.style.display = "block";
     judgePopup.classList.add('fadein');
     
     score = 20;
@@ -222,15 +219,16 @@ function CheckAnswer(cnt) {
     correctAnswer = "";
     submitButton.style.display = "none";
     if(cnt < questionNumber){
-        nextButton.style.display = nextDisplay;
+        nextButton.style.display = "block";
     }else{
-        resultButton.style.display = resultDisplay;
+        resultButton.style.display = "block";
     };
 }
 
 let checkRadio = document.getElementsByTagName("radio");
 let checkCheckbox = document.getElementsByName("checkbox");
 
+//onchangeで回答を選択するとエラーメッセージを消す
 function checkForm(){
     if(errorText){
         errorText.style.display = "none";
@@ -242,45 +240,35 @@ let resultGrade = document.getElementById("result_grade");
 let resultScore = document.getElementById("result_score");
 let resultTable = document.getElementById("result_table");
 let sliderBox = document.getElementsByClassName("slider")[0];
-let checkIndex;
+let checkIndex = "";
+
 
 function Result(){
     quizBox.style.display = "none";
     answerBox.style.display = "none";
     panelButton.style.display = "none";
     resultButton.style.display = "none";
-    resultBox.style.display = resultBoxDisplay;
+    resultBox.style.display = "block";
     judgePopup.style.display = "none";
     judgePopup.classList.remove(".fadein");
 
-
-    let grade = "";
-    if(total_score < 20){
-        grade = "E";
-    }else if(total_score < 40){
-        grade = "D";
-    }else if(total_score < 60){
-        grade = "C";
-    }else if(total_score < 80){
-        grade = "B";
-    }else{
-        grade = "A";
-    }
+    calcGrade(total_score);
 
     resultText.innerHTML = "結果：　" + correct_num + "問 / " + questionNumber + "問中　正解！";
     resultGrade.innerHTML = "評価： " + grade; 
     resultScore.innerHTML = "スコア： " + total_score + " 点";
 
-    
-    
+    // 各問題の正誤とスコアをテーブルで表示
     CreateTable();
 
+    // 問題と回答を表示
     for(i=0; i<questionNumber; i++){
         sliderBox.insertAdjacentHTML("beforeend", `<li class="slide_box"><img src="./img/${questions[questionOrder[i]].img}" alt="" class="slide_img"><div class="slide_question">${questions[questionOrder[i]].question}</div><form id="slide_answer_${i}" class="form_style"></form></div></li>`);
+
         if(questions[questionOrder[i]].answer_type == "radio"){
             for(element in questions[questionOrder[i]].answers) {
                 output.push(`<input type="radio" name="radio" value="${element}" id="radio_${element}" class="select_btn"><label for="radio_${element}">${questions[questionOrder[i]].answers[element]}</label>`);
-            
+                //　正解番号を格納
                 if(element == questions[questionOrder[i]].correct_answer){
                     // elementは１から始まるため-1しておく
                     checkIndex = Number(element-1);
@@ -295,8 +283,11 @@ function Result(){
         }else{
             output.push(`<label class="asnswer_text">${questions[questionOrder[i]].correct_answer}</label>`);
         };
-        slideAnswer = document.getElementById(`slide_answer_${i}`);
+
+        let slideAnswer = document.getElementById(`slide_answer_${i}`);
         slideAnswer.innerHTML = output.join("");
+
+        //　正解の選択肢を強調して表示
         if(questions[questionOrder[i]].answer_type == "radio"){
             slideAnswer.radio[checkIndex].checked = true;
             slideAnswer.getElementsByTagName("label")[checkIndex].style.color = "green";
@@ -315,6 +306,7 @@ function Result(){
         output.length = 0;
         checkIndex = "";
     };
+    //スライドショーを表示
     $('.slider').slick({
         autoplay:false,
         autoplaySpeed:2000,
@@ -325,10 +317,25 @@ function Result(){
   });
 }
 
-let slideAnswer;
+let grade = "";
+function calcGrade(total_score){
+    if(total_score < 20){
+        grade = "E";
+    }else if(total_score < 40){
+        grade = "D";
+    }else if(total_score < 60){
+        grade = "C";
+    }else if(total_score < 80){
+        grade = "B";
+    }else{
+        grade = "A";
+    }
+
+}
 
 /* 参考元
 https://developer.mozilla.org/ja/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces */
+// 各問題の正誤とスコアをテーブルで表示
 function CreateTable(){
   var tbl = document.createElement("table");
   var tblBody = document.createElement("tbody");
@@ -338,7 +345,7 @@ function CreateTable(){
     // 行<tr>タグの作成
     var row = document.createElement("tr");
 
-    for (var j = 0; j < 6; j++) {
+    for (var j = 0; j < questionNumber+1; j++) {
       //　列<td>タグを作成して各タグに問題番号と正誤を表示
       debugger
       var cell = document.createElement("td");
@@ -371,6 +378,13 @@ function CreateTable(){
   tbl.setAttribute("border", "1");
 }
 
+
+startButton.addEventListener('click', () => {
+    StartQuiz();
+});
+nextButton.addEventListener('click', () => {
+    StartQuiz();
+});
 panelButton.addEventListener('click', () => {
     if(p_num <36){
         OpenPanel();
@@ -378,23 +392,12 @@ panelButton.addEventListener('click', () => {
         alert("パネルは全て開いています");
     }
 });
-
 submitButton.addEventListener('click', () => {
     CheckAnswer(cnt);
 });
-
-nextButton.addEventListener('click', () => {
-    StartQuiz();
-});
-
-startButton.addEventListener('click', () => {
-    StartQuiz();
-});
-
 resultButton.addEventListener('click', () => {
     Result();
 });
-
 returnButton.addEventListener('click', () => {
     document.location.reload();
 });

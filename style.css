@@ -76,7 +76,6 @@ button, label{
     margin-top:15px;
     box-shadow:none;
 }
-
 .panel{
     background-color: #098be2;
 }
@@ -96,7 +95,6 @@ button, label{
     font-size: 30px;
     text-align: left;
 }
-
 #textbox{
     width: 10em;
     padding: 0.5em;
@@ -303,7 +301,6 @@ tr:nth-child(1){
     content:""!important;
     position: absolute;
  }
- /* カスタム矢印を表示 */
 .slider-arrow {
     font-size: 16px;
     color: #fff;
