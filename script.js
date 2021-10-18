@@ -84,6 +84,7 @@ function StartQuiz(){
     document.getElementById("top_img_box").style.display =  "none";
     submitButton.style.display = "block";
     panelButton.style.display = "block";
+    window.scroll({top: 0});
     p_num = 0;
     if(cnt == 0){ 
         quizBox.style.display = "block";
@@ -251,7 +252,8 @@ function Result(){
     resultBox.style.display = "block";
     judgePopup.style.display = "none";
     judgePopup.classList.remove(".fadein");
-
+    window.scroll({top: 0});
+    
     calcGrade(total_score);
 
     resultText.innerHTML = "結果：　" + correct_num + "問 / " + questionNumber + "問中　正解！";
